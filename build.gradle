@@ -67,7 +67,7 @@ dependencies {
 		
 	//3rdparty
 	compile('com.htc.ea:htc-ea-util:2.0.0-RELEASE')
-	compile('com.htc.ea:htc-ea-mcs-consumer:3.0.0-RELEASE')
+	//compile('com.htc.ea:htc-ea-mcs-consumer:3.0.0-RELEASE')
     
 	
 	compile('org.springframework.data:spring-data-redis')
