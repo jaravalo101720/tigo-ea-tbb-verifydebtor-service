@@ -66,9 +66,11 @@ public class ConsultDebtorRestController {
 	// @ApiImplicitParam(name = "operation-reference-id", required = true,
 	// dataType = "string", paramType = "header") })
 	// @HystrixCommand(fallbackMethod = "hystrixMethod")
-	@GetMapping(value = "/verify-debtor", produces = MediaType.APPLICATION_JSON_VALUE)
-	public ResponseEntity<Response> executeGet(@RequestParam(name = "accion") String accion,
-			@RequestParam(name = "idTransaccion") String idTransaccion, @RequestParam(name = "canal") String canal,
+  @GetMapping(value = "/verify-debtor", produces = MediaType.APPLICATION_JSON_VALUE)
+	public ResponseEntity<Response> executeGet(
+			@RequestParam(name = "accion") String accion,
+			@RequestParam(name = "idTransaccion") String idTransaccion, 
+			@RequestParam(name = "canal") String canal,
 			@RequestParam(name = "servicio") String servicio,
 			@RequestParam(name = "tipoDocumento") String tipoDocumento,
 			@RequestParam(name = "nroDocumento") String nroDocumento) {
@@ -77,10 +79,10 @@ public class ConsultDebtorRestController {
 		TransactionIdUtil.begin();
 		TimeChronometer time = new TimeChronometer();
 		try {
-
+  
 			TransactionIdUtil.setMsisdn(nroDocumento);
 			this.validate(idTransaccion, accion, "VerifyDebtor");
-			appUtil.info(Constants.CATEGORY_SERVICE, "", clazz, ConsumerAppUtil.getMethodName(), "nominacion: Request",
+			appUtil.info(Constants.CATEGORY_SERVICE, "", clazz, ConsumerAppUtil.getMethodName(), "verify-debtor: Request",
 					"", "", 0L);
 			time.start();
 			// GenericDto result = logicImpl.customerInfobyDocumentId(request);
@@ -94,8 +96,9 @@ public class ConsultDebtorRestController {
 			response = new ResponseEntity<>(result, HttpStatus.OK);
 			time.stop();
 			appUtil.info(Constants.CATEGORY_SERVICE, response, clazz, ConsumerAppUtil.getMethodName(),
-					"nominacion: Response", "", "", time.elapsedMilisUntilLastStop());
-		} catch (AppServiceException e) {			String description = "";
+					"verify-debtor: Response", "", "", time.elapsedMilisUntilLastStop());
+		} catch (AppServiceException e) {			
+		String description = "";
 		String code = "";
 		code = e.getCode();
 		description = e.getMessage();
@@ -107,7 +110,7 @@ public class ConsultDebtorRestController {
 					Long.parseLong(env.getProperty(Constants.CODE_ERROR)), env.getProperty(Constants.MSJ_ERROR), null);
 			time.stop();
 			appUtil.error(Constants.CATEGORY_SERVICE, clazz, ConsumerAppUtil.getMethodName(),
-					"nominacion: Error response", "", "", time.elapsedMilisUntilLastStop(), null, e);
+					"verify-debtor: Error response", "", "", time.elapsedMilisUntilLastStop(), null, e);
 
 		}
 		TransactionIdUtil.end();

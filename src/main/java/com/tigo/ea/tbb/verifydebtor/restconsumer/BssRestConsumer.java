@@ -56,9 +56,9 @@ public class BssRestConsumer {
 
 			headers = basicAuth(user, pass);
 			HttpEntity<String> hea = new HttpEntity<>(headers);
-			UriComponentsBuilder builder = UriComponentsBuilder.fromUriString(url);
-			request.forEach((k, v) -> builder.queryParam(k, v));
-			String uriBuilder = builder.build().encode().toUriString();
+			UriComponentsBuilder builder = UriComponentsBuilder.fromUriString(url);// para que es este linea
+			request.forEach((k, v) -> builder.queryParam(k, v));// para que es este linea
+			String uriBuilder = builder.build().encode().toUriString();// para que es este linea
 
 			time.start();
 			appUtil.info(Constants.CATEGORY_TARGET, uriBuilder, clazz, ConsumerAppUtil.getMethodName(),

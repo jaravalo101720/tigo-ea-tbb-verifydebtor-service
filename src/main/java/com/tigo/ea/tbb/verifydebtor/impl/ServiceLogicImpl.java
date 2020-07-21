@@ -28,7 +28,7 @@ public class ServiceLogicImpl {
 	private Environment env;
 	@Autowired
 	private ConsumerAppUtil appUtil;
-	@Autowired
+	//@Autowired
 	private BssRestConsumer restConsumer;
 
 	@Autowired
@@ -45,6 +45,7 @@ public class ServiceLogicImpl {
 			appUtil.debug(Constants.CATEGORY_SERVICE, request, clazz, ConsumerAppUtil.getMethodName(),
 					"Inicia proceso de " + ConsumerAppUtil.getMethodName(), "",request.getStringProperty(Constants.PARAMETER_DOCUMENTO) != null ? request.getStringProperty(Constants.PARAMETER_DOCUMENTO) : "", 0L);
 
+			
 			
 			appUtil.debug(Constants.CATEGORY_SERVICE, response, clazz, ConsumerAppUtil.getMethodName(),
 					"Finaliza proceso de " + ConsumerAppUtil.getMethodName(), "",
