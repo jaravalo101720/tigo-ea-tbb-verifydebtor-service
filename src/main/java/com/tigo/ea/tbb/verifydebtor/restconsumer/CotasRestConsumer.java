@@ -31,7 +31,7 @@ public class CotasRestConsumer {
 	private Logger log4j = LoggerFactory.getLogger(clazz);
 
 	
-	public GenericDto executeGet(String idTransaccion,String servicio, String nroDocumento) {
+	public GenericDto executeGet(GenericDto request) {
 		
 		RestTemplate restTemplate = new RestTemplate();
 		GenericDto responseService = null;
@@ -41,15 +41,13 @@ public class CotasRestConsumer {
 		
 
 		TimeChronometer time = new TimeChronometer();
-		String url="api/consultadeuda";
+		String url=env.getProperty("uri.consumer.service.operator.cotas");
 		
 		try {
-			String request=" idTransaccion: " + idTransaccion != null ? idTransaccion : ""+ 
-					", servicio: " + servicio != null ? servicio : "" + 
-					", nroDocumento: " + nroDocumento!= null ? nroDocumento : "" ;
+			
 			time.start();
 			appUtil.info(Constants.CATEGORY_TARGET, "", clazz, ConsumerAppUtil.getMethodName(),
-					"Request servicio " + ConsumerAppUtil.getMethodName(), "", request, 0L);
+					"Request servicio " + ConsumerAppUtil.getMethodName(), "", request.getStringProperty(Constants.PARAMETER_DOCUMENTO), 0L);
 			
 			ResponseEntity<GenericDto> response = restTemplate.exchange(url, HttpMethod.GET,header, GenericDto.class);
 
@@ -60,7 +58,7 @@ public class CotasRestConsumer {
 			}
 			time.stop();
 			appUtil.info(Constants.CATEGORY_TARGET, responseService, clazz, ConsumerAppUtil.getMethodName(),
-					"Response servicio " + ConsumerAppUtil.getMethodName(), "", request,
+					"Response servicio " + ConsumerAppUtil.getMethodName(), "", request.getStringProperty(Constants.PARAMETER_DOCUMENTO),
 					time.elapsedMilisUntilLastStop());
 
 		} catch (HttpStatusCodeException e) {

@@ -1,4 +1,4 @@
-/*package com.tigo.ea.tbb.verifydebtor.rest;
+package com.tigo.ea.tbb.verifydebtor.rest;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -30,8 +30,8 @@ import com.tigo.ea.tbb.verifydebtor.util.ConsumerAppUtil;
 import io.swagger.annotations.Api;
 
 @RestController
-//@RequestMapping("/operator")
-//@Api(value = "/operator", tags = "Ejecucion de proceso customerinfo")
+@RequestMapping("/operator")
+@Api(value = "/operator", tags = "Ejecucion de proceso customerinfo")
 public class VerifyDebtorRestController {
 	
 	
@@ -47,7 +47,7 @@ public class VerifyDebtorRestController {
 	@Autowired
 	private VerifyDebtorServiceImpl verifyDebtor;
 	
-	//@GetMapping(value = "/verify-debtor", produces = MediaType.APPLICATION_JSON_VALUE)
+	@GetMapping(value = "/verify-debtor", produces = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<?> executeGet(
 			@RequestParam(name = "accion") String accion,
 			@RequestParam(name = "idTransaccion") String idTransaccion, 
@@ -101,4 +101,4 @@ public class VerifyDebtorRestController {
 		}
 
 	}
-}*/
+}

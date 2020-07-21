@@ -33,27 +33,27 @@ public class AxsRestConsumer {
 	private Logger log4j = LoggerFactory.getLogger(clazz);
 
 	
-	public GenericDto executeGet(String idTransaccion,String servicio, String nroDocumento) {
+	public GenericDto executeGet(GenericDto request ) {
 		
 		RestTemplate restTemplate = new RestTemplate();
 		GenericDto responseService = null;
 		HttpHeaders headers = new HttpHeaders();
-		HttpEntity<String> header = new HttpEntity<>(headers);
-		headers.setAccept(Arrays.asList(MediaType.APPLICATION_JSON));	
+		headers.setAccept(Arrays.asList(MediaType.APPLICATION_JSON));
+		HttpEntity<GenericDto> httpEntity = new HttpEntity<>(request, headers);
+		//preguntar tipo de autenticacion en el headers
 		
 
 		TimeChronometer time = new TimeChronometer();
-		String url="consultaMora/nroDocumento?tipoDocumento=CI&servicio=MOVIL-V-D&idTransaccion=1";
+		String url=env.getProperty("uri.consumer.service.operator.axs");//http://localhost:8080/axs
 		
 		try {
-			String request=" idTransaccion: " + idTransaccion != null ? idTransaccion : ""+ 
-					", servicio: " + servicio != null ? servicio : "" + 
-					", nroDocumento: " + nroDocumento!= null ? nroDocumento : "" ;
-			time.start();
-			appUtil.info(Constants.CATEGORY_TARGET, "", clazz, ConsumerAppUtil.getMethodName(),
-					"Request servicio " + ConsumerAppUtil.getMethodName(), "", request, 0L);
 			
-			ResponseEntity<GenericDto> response = restTemplate.exchange(url, HttpMethod.GET,header, GenericDto.class);
+			time.start();
+			
+			appUtil.info(Constants.CATEGORY_TARGET, request, clazz, ConsumerAppUtil.getMethodName(),
+					"Request servicio " + ConsumerAppUtil.getMethodName(), "", request.getStringProperty(Constants.PARAMETER_NRODOCUMENTO), 0L);
+			//preguntar request en data o details
+			ResponseEntity<GenericDto> response = restTemplate.exchange(url, HttpMethod.POST,httpEntity, GenericDto.class);
 
 			if (response==null || response.getBody() == null || response.getBody().isEmpty()) {
 				throw new AppServiceException(env.getProperty(Constants.CODE_SERVICE), "no data to return");
@@ -62,7 +62,7 @@ public class AxsRestConsumer {
 			}
 			time.stop();
 			appUtil.info(Constants.CATEGORY_TARGET, responseService, clazz, ConsumerAppUtil.getMethodName(),
-					"Response servicio " + ConsumerAppUtil.getMethodName(), "", request,
+					"Response servicio " + ConsumerAppUtil.getMethodName(), "", request.getStringProperty(Constants.PARAMETER_NRODOCUMENTO),
 					time.elapsedMilisUntilLastStop());
 
 		} catch (HttpStatusCodeException e) {
@@ -77,7 +77,7 @@ public class AxsRestConsumer {
 					"Response exception",
 					"codigo: " + serviceException.getCode() + " detalle: " + serviceException.getMessage(), "",
 					time.elapsedMilisUntilLastStop());
-
+			
 			throw serviceException;
 		} catch (Exception e) {
 			time.stop();

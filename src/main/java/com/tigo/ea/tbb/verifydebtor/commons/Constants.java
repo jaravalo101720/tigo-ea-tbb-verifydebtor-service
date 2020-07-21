@@ -61,5 +61,14 @@ public class Constants
 	public static final String BSS_AUTH_USER = 	"tbb.qvantel.cba.user";
 	public static final String BSS_AUTH_PASS = 	"tbb.qvantel.cba.password";
 	
+	//request consumer
+	public static final String PARAMETER_IDTRANSACTION = "idTransaction";
+	public static final String PARAMETER_SERVICE = "service";
+	public static final String PARAMETER_TIPODOCUMENTO = "tipoDocumento";
+	public static final String PARAMETER_NRODOCUMENTO = "nroDocumento";
 	
+	//response consumer
+	public static final String PARAMETER_OPERATOR = "axs";
+	public static final String PARAMETER_ESTADO = "estado";
+
 }

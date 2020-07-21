@@ -63,6 +63,7 @@ public class BssRestConsumer {
 			time.start();
 			appUtil.info(Constants.CATEGORY_TARGET, uriBuilder, clazz, ConsumerAppUtil.getMethodName(),
 					"Request servicio " + ConsumerAppUtil.getMethodName(), "", request.getStringProperty(Constants.PARAMETER_DOCUMENTO), 0L);
+			
 			ResponseEntity<GenericDto> response = restTemplate.exchange(uriBuilder, HttpMethod.GET, hea,
 					GenericDto.class);
 
@@ -120,7 +121,7 @@ public class BssRestConsumer {
 		String base64Creds = new String(base64CredsBytes, "UTF-8");
 
 		HttpHeaders headers = new HttpHeaders();
-		headers.add("Authorization", "Basic " + base64Creds);
+		headers.add("Authorization", "Basic " + base64Creds);//preguntar si se consumira el token como parametro, me mandaran token o se consumira aqui
 		return headers;
 	}
 
