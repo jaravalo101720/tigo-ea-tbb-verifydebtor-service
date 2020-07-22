@@ -77,7 +77,7 @@ public class VerifyDebtorRestController {
 					"", "", 0L);
 			time.start();
 		
-			responseData=verifyDebtorService.excuteConumerOperator(idTransaccion, servicio, tipoDocumento, nroDocumento);
+			responseData=verifyDebtorService.excuteConsumerOperator(idTransaccion, servicio, tipoDocumento, nroDocumento);
 			response= new ResponseEntity<>(responseData, HttpStatus.OK);
 			
 			time.stop();

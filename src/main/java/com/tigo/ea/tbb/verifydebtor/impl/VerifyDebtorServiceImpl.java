@@ -42,7 +42,7 @@ public class VerifyDebtorServiceImpl {
 	private CotasRestConsumer cotasRestconsumer;
 	
 	
-     public List<Response> excuteConumerOperator(String idTransaction, String servicio, String tipoDocumento, String nroDocumento) {
+     public List<Response> excuteConsumerOperator(String idTransaction, String servicio, String tipoDocumento, String nroDocumento) {
     	 List<Response> response= new ArrayList<Response>();
     	 Response responseDto=new Response();
     	 
