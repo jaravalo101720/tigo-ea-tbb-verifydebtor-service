@@ -80,5 +80,21 @@ public class ValidateRequest {
 		return requestService;
 	}
 	
+	public  boolean stringValidation(String... values){
+        Boolean validation = false;
+        if(values  != null){
+          int errors = 0;
+            for (String aux : values) {
+              if(aux == null || aux.isEmpty())
+                  errors++;
+            }              
+            if (errors > 0) 
+                validation = true;              
+          }else{
+              validation = true;
+          }        
+          return validation;
+  }
+	
 
 }

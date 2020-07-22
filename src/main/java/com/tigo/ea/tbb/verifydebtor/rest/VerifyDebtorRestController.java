@@ -22,10 +22,10 @@ import com.tigo.ea.tbb.verifydebtor.dto.Data;
 import com.tigo.ea.tbb.verifydebtor.dto.GeneralInfo;
 import com.tigo.ea.tbb.verifydebtor.dto.OperadorStatus;
 import com.tigo.ea.tbb.verifydebtor.dto.Response;
-import com.tigo.ea.tbb.verifydebtor.impl.ServiceLogicImpl;
 import com.tigo.ea.tbb.verifydebtor.impl.VerifyDebtorServiceImpl;
 import com.tigo.ea.tbb.verifydebtor.util.AppServiceException;
 import com.tigo.ea.tbb.verifydebtor.util.ConsumerAppUtil;
+import com.tigo.ea.tbb.verifydebtor.util.ValidateRequest;
 
 import io.swagger.annotations.Api;
 
@@ -43,6 +43,9 @@ public class VerifyDebtorRestController {
 	private ConsumerAppUtil appUtil;
 	@Autowired
 	private WebUtil webUtil;
+	
+	@Autowired
+    private ValidateRequest validateRequest;
 	
 	@Autowired
 	private VerifyDebtorServiceImpl verifyDebtorService;
@@ -64,6 +67,11 @@ public class VerifyDebtorRestController {
 		try {
 
 			TransactionIdUtil.setMsisdn(nroDocumento);
+			
+			if(validateRequest.stringValidation(accion, idTransaccion, canal, servicio, tipoDocumento, nroDocumento) ) {
+				throw new AppServiceException(env.getProperty("error.code.1"), env.getProperty("tbb.enduser.badrequest"));
+			}
+			
 			this.validate(idTransaccion, accion, "VerifyDebtor");
 			appUtil.info(Constants.CATEGORY_SERVICE, "", clazz, ConsumerAppUtil.getMethodName(), "verify-debtor: Request",
 					"", "", 0L);

@@ -41,7 +41,7 @@ public class CotasRestConsumer {
 		
 
 		TimeChronometer time = new TimeChronometer();
-		String url="";
+		String url=env.getProperty("uri.consumer.service.operator.cotas");
 		
 		try {
 			
@@ -49,7 +49,7 @@ public class CotasRestConsumer {
 			appUtil.info(Constants.CATEGORY_TARGET, "", clazz, ConsumerAppUtil.getMethodName(),
 					"Request servicio " + ConsumerAppUtil.getMethodName(), "", request.getStringProperty(Constants.PARAMETER_NRODOCUMENTO), 0L);
 			
-			ResponseEntity<GenericDto> response = restTemplate.exchange(url, HttpMethod.GET,httpEntity, GenericDto.class);
+			ResponseEntity<GenericDto> response = restTemplate.exchange(url, HttpMethod.POST,httpEntity, GenericDto.class);
 
 			if (response==null || response.getBody() == null || response.getBody().isEmpty()) {
 				throw new AppServiceException(env.getProperty(Constants.CODE_SERVICE), "no data to return");
@@ -66,7 +66,7 @@ public class CotasRestConsumer {
 			appUtil.error(Constants.CATEGORY_TARGET, clazz, ConsumerAppUtil.getMethodName(),
 					"Error consumiendo servicio " + ConsumerAppUtil.getMethodName(), "Error de ejecucion",
 					"", time.elapsedMilisUntilLastStop(), "", e);
-			throw e;
+			//throw e;
 		} catch (AppServiceException serviceException) {
 			time.stop();
 			appUtil.info(Constants.CATEGORY_SERVICE, responseService, clazz, ConsumerAppUtil.getMethodName(),
@@ -74,15 +74,15 @@ public class CotasRestConsumer {
 					"codigo: " + serviceException.getCode() + " detalle: " + serviceException.getMessage(), "",
 					time.elapsedMilisUntilLastStop());
 
-			throw serviceException;
+			//throw serviceException;
 		} catch (Exception e) {
 			time.stop();
 			appUtil.error(Constants.CATEGORY_TARGET, clazz, ConsumerAppUtil.getMethodName(),
 					ConsumerAppUtil.getMethodName() + " : Error consumiendo servicio "
 							+ ConsumerAppUtil.getMethodName(),
 					"Error de servicio", "", time.elapsedMilisUntilLastStop(), "", e);
-			throw new AppServiceException(env.getProperty(Constants.CODE_SERVICE),
-					String.format(env.getProperty(Constants.MSJ_SERVICE), ConsumerAppUtil.getMethodName()));
+			//throw new AppServiceException(env.getProperty(Constants.CODE_SERVICE),
+			//		String.format(env.getProperty(Constants.MSJ_SERVICE), ConsumerAppUtil.getMethodName()));
 		}
 		return responseService;
 	}

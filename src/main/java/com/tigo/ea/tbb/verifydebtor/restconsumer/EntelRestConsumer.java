@@ -41,7 +41,7 @@ public class EntelRestConsumer {
 		
 
 		TimeChronometer time = new TimeChronometer();
-		String url="";
+		String url=env.getProperty("uri.consumer.service.operator.entel");
 		
 		try {
 			
@@ -66,7 +66,7 @@ public class EntelRestConsumer {
 			appUtil.error(Constants.CATEGORY_TARGET, clazz, ConsumerAppUtil.getMethodName(),
 					"Error consumiendo servicio " + ConsumerAppUtil.getMethodName(), "Error de ejecucion",
 					"", time.elapsedMilisUntilLastStop(), "", e);
-			throw e;
+			//throw e;
 		} catch (AppServiceException serviceException) {
 			time.stop();
 			appUtil.info(Constants.CATEGORY_SERVICE, responseService, clazz, ConsumerAppUtil.getMethodName(),
@@ -74,15 +74,15 @@ public class EntelRestConsumer {
 					"codigo: " + serviceException.getCode() + " detalle: " + serviceException.getMessage(), "",
 					time.elapsedMilisUntilLastStop());
 
-			throw serviceException;
+			//throw serviceException;
 		} catch (Exception e) {
 			time.stop();
 			appUtil.error(Constants.CATEGORY_TARGET, clazz, ConsumerAppUtil.getMethodName(),
 					ConsumerAppUtil.getMethodName() + " : Error consumiendo servicio "
 							+ ConsumerAppUtil.getMethodName(),
 					"Error de servicio", "", time.elapsedMilisUntilLastStop(), "", e);
-			throw new AppServiceException(env.getProperty(Constants.CODE_SERVICE),
-					String.format(env.getProperty(Constants.MSJ_SERVICE), ConsumerAppUtil.getMethodName()));
+			//throw new AppServiceException(env.getProperty(Constants.CODE_SERVICE),
+			//		String.format(env.getProperty(Constants.MSJ_SERVICE), ConsumerAppUtil.getMethodName()));
 		}
 		return responseService;
 	}

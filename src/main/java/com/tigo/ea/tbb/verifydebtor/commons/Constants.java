@@ -73,5 +73,13 @@ public class Constants
 	
 	public static final String OPERATOR_VIVA = "VIVA";
 	public static final String PARAMETER_ESTADO_DEUDA = "estadoDeuda";
+	
+	public static final String OPERATOR_ENTEL = "ENTEL";
+	
+	public static final String OPERATOR_COTAS = "COTAS";
+	public static final String PARAMETER_ESTADO_DEUDA_COTAS = "EstadoDeuda";
+	
+	//estado null si llega a fallar el consumo del servicio
+	public static final String ESTADO = null;
 
 }
