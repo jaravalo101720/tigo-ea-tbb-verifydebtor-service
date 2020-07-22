@@ -40,7 +40,7 @@ public class AxsRestConsumer {
 		HttpHeaders headers = new HttpHeaders();
 		headers.setAccept(Arrays.asList(MediaType.APPLICATION_JSON));
 		HttpEntity<GenericDto> httpEntity = new HttpEntity<>(request, headers);
-		//preguntar tipo de autenticacion en el headers
+		
 		
 
 		TimeChronometer time = new TimeChronometer();
@@ -52,7 +52,7 @@ public class AxsRestConsumer {
 			
 			appUtil.info(Constants.CATEGORY_TARGET, request, clazz, ConsumerAppUtil.getMethodName(),
 					"Request servicio " + ConsumerAppUtil.getMethodName(), "", request.getStringProperty(Constants.PARAMETER_NRODOCUMENTO), 0L);
-			//preguntar request en data o details
+			
 			ResponseEntity<GenericDto> response = restTemplate.exchange(url, HttpMethod.POST,httpEntity, GenericDto.class);
 
 			if (response==null || response.getBody() == null || response.getBody().isEmpty()) {
