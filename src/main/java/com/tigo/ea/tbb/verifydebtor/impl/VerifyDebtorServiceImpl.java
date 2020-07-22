@@ -23,47 +23,53 @@ public class VerifyDebtorServiceImpl {
 
 	@Autowired
 	private VivaRestConsumer vivaRestConsumer;
-	
 	@Autowired
 	private AxsRestConsumer axsRestConsumer;
 	
 	
-     public List<Response> excuteConumerOperator(String idtransaction, String servicio, String tipoDocumento, String nroDocumento) {
+     public List<Response> excuteConumerOperator(String idTransaction, String servicio, String tipoDocumento, String nroDocumento) {
     	 List<Response> response= new ArrayList<Response>();
-    	 Response responseAxs=new Response();
+    	 Response responseDto=new Response();
+    	 Response responseViva=new Response();
     	 
     	 List<OperadorStatus> operadores = new ArrayList<>();
 			OperadorStatus operador= new OperadorStatus();
+			OperadorStatus operadorViva= new OperadorStatus();
 			AdditionalInfo addInfo=null;
 			GeneralInfo generalInfo=null;
 			Data data=null;
 			
 		 GenericDto responseAxsDto= new GenericDto();
-		 responseAxsDto= executeAxs(idtransaction, servicio, tipoDocumento, nroDocumento);
+		 responseAxsDto= executeAxs(idTransaction, servicio, tipoDocumento, nroDocumento);
 		 
-			operador.setOperador(responseAxsDto.getStringProperty(Constants.PARAMETER_OPERATOR));
+		 GenericDto responseVivaDto= new GenericDto();
+		 responseVivaDto= executeViva(idTransaction, servicio, tipoDocumento, nroDocumento);
+		 
+			operador.setOperador(Constants.OPERATOR_AXS);
 			operador.setEstadoDeuda(responseAxsDto.getStringProperty(Constants.PARAMETER_ESTADO));	
+			
+			operadorViva.setOperador(Constants.OPERATOR_VIVA);
+			operadorViva.setEstadoDeuda(responseVivaDto.getStringProperty(Constants.PARAMETER_ESTADO_DEUDA));
 		 	
 			operadores.add(operador);
+			operadores.add(operadorViva);
 			generalInfo =new GeneralInfo("0", "Proceso satisfactorio");
 			addInfo = new AdditionalInfo(operadores);
 			data= new Data (generalInfo, addInfo);
 			 
-	    	 responseAxs=new Response(data);
-	    	 
-	    	 response.add(responseAxs);
+			responseDto=new Response(data);  	 
+	    	response.add(responseDto);
+	    
 		
     	 return response;
     	 
      }
      
-     
-     //
-     private GenericDto executeAxs(String idtransaction, String servicio, String tipoDocumento, String nroDocumento) {
+     private GenericDto executeAxs(String idTransaction, String servicio, String tipoDocumento, String nroDocumento) {
     	 GenericDto request= new GenericDto();
     	 GenericDto response= new GenericDto();
     	 //llenar objeto
-    	 request.setProperty(Constants.PARAMETER_IDTRANSACTION, idtransaction);
+    	 request.setProperty(Constants.PARAMETER_IDTRANSACTION, idTransaction);
     	 request.setProperty(Constants.PARAMETER_SERVICE, servicio);
     	 request.setProperty(Constants.PARAMETER_TIPODOCUMENTO, tipoDocumento);
     	 request.setProperty(Constants.PARAMETER_NRODOCUMENTO, nroDocumento);
@@ -73,6 +79,20 @@ public class VerifyDebtorServiceImpl {
     	 
 		return response;
     	 
+     }
+     
+     private GenericDto executeViva(String idTransaction, String servicio, String tipoDocumento, String nroDocumento) {
+    	 GenericDto request= new GenericDto();
+    	 GenericDto response= new GenericDto();
+    	 
+    	 request.setProperty(Constants.PARAMETER_IDTRANSACTION, idTransaction);
+    	 request.setProperty(Constants.PARAMETER_SERVICE, servicio);
+    	 request.setProperty(Constants.PARAMETER_TIPODOCUMENTO, tipoDocumento);
+    	 request.setProperty(Constants.PARAMETER_NRODOCUMENTO, nroDocumento);
+    	 
+    	 response=vivaRestConsumer.executeGet(request);
+    	 
+    	 return response;
      }
      
      

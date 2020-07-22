@@ -40,8 +40,8 @@ public class VivaRestConsumer {
 		RestTemplate restTemplate = new RestTemplate();
 		GenericDto responseService = null;
 		HttpHeaders headers = new HttpHeaders();
-		HttpEntity<String> header = new HttpEntity<>(headers);
 		headers.setAccept(Arrays.asList(MediaType.APPLICATION_JSON));	
+		HttpEntity<GenericDto> httpEntity = new HttpEntity<>(request, headers);	
 		
 
 		TimeChronometer time = new TimeChronometer();
@@ -51,9 +51,9 @@ public class VivaRestConsumer {
 			
 			time.start();
 			appUtil.info(Constants.CATEGORY_TARGET, "", clazz, ConsumerAppUtil.getMethodName(),
-					"Request servicio " + ConsumerAppUtil.getMethodName(), "", request.getStringProperty(Constants.PARAMETER_DOCUMENTO), 0L);
+					"Request servicio " + ConsumerAppUtil.getMethodName(), "", request.getStringProperty(Constants.PARAMETER_NRODOCUMENTO), 0L);
 			
-			ResponseEntity<GenericDto> response = restTemplate.exchange(url, HttpMethod.GET,header, GenericDto.class);
+			ResponseEntity<GenericDto> response = restTemplate.exchange(url, HttpMethod.POST,httpEntity, GenericDto.class);
 
 			if (response==null || response.getBody() == null || response.getBody().isEmpty()) {
 				throw new AppServiceException(env.getProperty(Constants.CODE_SERVICE), "no data to return");
@@ -62,7 +62,7 @@ public class VivaRestConsumer {
 			}
 			time.stop();
 			appUtil.info(Constants.CATEGORY_TARGET, responseService, clazz, ConsumerAppUtil.getMethodName(),
-					"Response servicio " + ConsumerAppUtil.getMethodName(), "", request.getStringProperty(Constants.PARAMETER_DOCUMENTO),
+					"Response servicio " + ConsumerAppUtil.getMethodName(), "", request.getStringProperty(Constants.PARAMETER_NRODOCUMENTO),
 					time.elapsedMilisUntilLastStop());
 
 		} catch (HttpStatusCodeException e) {

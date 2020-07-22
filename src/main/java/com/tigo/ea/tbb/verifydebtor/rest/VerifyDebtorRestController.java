@@ -45,7 +45,7 @@ public class VerifyDebtorRestController {
 	private WebUtil webUtil;
 	
 	@Autowired
-	private VerifyDebtorServiceImpl verifyDebtor;
+	private VerifyDebtorServiceImpl verifyDebtorService;
 	
 	@GetMapping(value = "/verify-debtor", produces = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<?> executeGet(
@@ -57,6 +57,7 @@ public class VerifyDebtorRestController {
 			@RequestParam(name = "nroDocumento") String nroDocumento) {
 		
 		ResponseEntity<?> response = null;
+		List<Response> responseData= null;
 		String loggingTrace = "";
 		TransactionIdUtil.begin();
 		TimeChronometer time = new TimeChronometer();
@@ -67,8 +68,10 @@ public class VerifyDebtorRestController {
 			appUtil.info(Constants.CATEGORY_SERVICE, "", clazz, ConsumerAppUtil.getMethodName(), "verify-debtor: Request",
 					"", "", 0L);
 			time.start();
-			// GenericDto result = logicImpl.customerInfobyDocumentId(request);
-			verifyDebtor.getConsumer(idTransaccion, servicio, nroDocumento);
+		
+			responseData=verifyDebtorService.excuteConumerOperator(idTransaccion, servicio, tipoDocumento, nroDocumento);
+			response= new ResponseEntity<>(responseData, HttpStatus.OK);
+			
 			time.stop();
 			appUtil.info(Constants.CATEGORY_SERVICE, response, clazz, ConsumerAppUtil.getMethodName(),
 					"verify-debtor: Response", "", "", time.elapsedMilisUntilLastStop());

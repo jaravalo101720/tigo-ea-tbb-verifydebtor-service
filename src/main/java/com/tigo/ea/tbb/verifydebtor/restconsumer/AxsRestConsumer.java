@@ -44,7 +44,7 @@ public class AxsRestConsumer {
 		
 
 		TimeChronometer time = new TimeChronometer();
-		String url=env.getProperty("uri.consumer.service.operator.axs");//http://localhost:8080/axs
+		String url=env.getProperty("uri.consumer.service.operator.axs");
 		
 		try {
 			

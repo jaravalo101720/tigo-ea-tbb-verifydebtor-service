@@ -1,4 +1,4 @@
-package com.tigo.ea.tbb.verifydebtor.rest;
+/*package com.tigo.ea.tbb.verifydebtor.rest;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -66,7 +66,7 @@ public class ConsultDebtorRestController {
 	// @ApiImplicitParam(name = "operation-reference-id", required = true,
 	// dataType = "string", paramType = "header") })
 	// @HystrixCommand(fallbackMethod = "hystrixMethod")
-  @GetMapping(value = "/verify-debtor", produces = MediaType.APPLICATION_JSON_VALUE)
+/*  @GetMapping(value = "/verify-debtor", produces = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<Response> executeGet(
 			@RequestParam(name = "accion") String accion,
 			@RequestParam(name = "idTransaccion") String idTransaccion, 
@@ -151,3 +151,4 @@ public class ConsultDebtorRestController {
 
 	}
 }
+*/

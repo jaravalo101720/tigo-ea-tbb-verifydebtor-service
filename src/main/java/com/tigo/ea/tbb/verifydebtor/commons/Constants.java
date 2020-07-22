@@ -68,7 +68,10 @@ public class Constants
 	public static final String PARAMETER_NRODOCUMENTO = "nroDocumento";
 	
 	//response consumer
-	public static final String PARAMETER_OPERATOR = "axs";
+	public static final String OPERATOR_AXS = "AXS";
 	public static final String PARAMETER_ESTADO = "estado";
+	
+	public static final String OPERATOR_VIVA = "VIVA";
+	public static final String PARAMETER_ESTADO_DEUDA = "estadoDeuda";
 
 }
