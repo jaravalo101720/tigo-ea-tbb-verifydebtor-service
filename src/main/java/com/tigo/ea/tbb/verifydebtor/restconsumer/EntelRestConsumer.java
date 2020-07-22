@@ -32,18 +32,17 @@ public class EntelRestConsumer {
 
 	
 	public GenericDto executeGet(GenericDto request) {
-		
-		RestTemplate restTemplate = new RestTemplate();
 		GenericDto responseService = null;
+		RestTemplate restTemplate = new RestTemplate();
 		HttpHeaders headers = new HttpHeaders();
-		headers.setAccept(Arrays.asList(MediaType.APPLICATION_JSON));	
-		HttpEntity<GenericDto> httpEntity = new HttpEntity<>(request, headers);	
-		
-
 		TimeChronometer time = new TimeChronometer();
-		String url=env.getProperty("uri.consumer.service.operator.entel");
+		
 		
 		try {
+			
+			headers.setAccept(Arrays.asList(MediaType.APPLICATION_JSON));	
+			HttpEntity<GenericDto> httpEntity = new HttpEntity<>(request, headers);	
+			String url=env.getProperty("uri.consumer.service.operator.entel");
 			
 			time.start();
 			appUtil.info(Constants.CATEGORY_TARGET, "", clazz, ConsumerAppUtil.getMethodName(),

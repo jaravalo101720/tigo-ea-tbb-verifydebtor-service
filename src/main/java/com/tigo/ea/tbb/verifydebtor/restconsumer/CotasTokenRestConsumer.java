@@ -22,7 +22,8 @@ import com.tigo.ea.tbb.verifydebtor.util.AppServiceException;
 import com.tigo.ea.tbb.verifydebtor.util.ConsumerAppUtil;
 
 @Component
-public class CotasRestConsumer {
+public class CotasTokenRestConsumer {
+
 	private final Class<?> clazz = this.getClass();
 	@Autowired
 	private Environment env;
@@ -31,22 +32,21 @@ public class CotasRestConsumer {
 	private Logger log4j = LoggerFactory.getLogger(clazz);
 
 	
-	public GenericDto executeGet(GenericDto request) {
+	public GenericDto executeGet(GenericDto request ) {
 		GenericDto responseService = null;
 		RestTemplate restTemplate = new RestTemplate();
 		HttpHeaders headers = new HttpHeaders();
 		TimeChronometer time = new TimeChronometer();
 		
-		
-		
 		try {
-
-			headers.setAccept(Arrays.asList(MediaType.APPLICATION_JSON));	
+			
+			headers.setAccept(Arrays.asList(MediaType.APPLICATION_JSON));
 			HttpEntity<GenericDto> httpEntity = new HttpEntity<>(request, headers);
-			String url=env.getProperty("uri.consumer.service.operator.cotas");
+			String url=env.getProperty("uri.consumer.token.service.operator.cotas");
 			
 			time.start();
-			appUtil.info(Constants.CATEGORY_TARGET, "", clazz, ConsumerAppUtil.getMethodName(),
+			
+			appUtil.info(Constants.CATEGORY_TARGET, request, clazz, ConsumerAppUtil.getMethodName(),
 					"Request servicio " + ConsumerAppUtil.getMethodName(), "", request.getStringProperty(Constants.PARAMETER_NRODOCUMENTO), 0L);
 			
 			ResponseEntity<GenericDto> response = restTemplate.exchange(url, HttpMethod.POST,httpEntity, GenericDto.class);
@@ -73,7 +73,7 @@ public class CotasRestConsumer {
 					"Response exception",
 					"codigo: " + serviceException.getCode() + " detalle: " + serviceException.getMessage(), "",
 					time.elapsedMilisUntilLastStop());
-
+			
 			//throw serviceException;
 		} catch (Exception e) {
 			time.stop();
@@ -86,6 +86,4 @@ public class CotasRestConsumer {
 		}
 		return responseService;
 	}
-	
-
 }

@@ -17,6 +17,7 @@ import com.tigo.ea.tbb.verifydebtor.dto.GeneralInfo;
 import com.tigo.ea.tbb.verifydebtor.dto.OperadorStatus;
 import com.tigo.ea.tbb.verifydebtor.dto.Response;
 import com.tigo.ea.tbb.verifydebtor.restconsumer.AxsRestConsumer;
+import com.tigo.ea.tbb.verifydebtor.restconsumer.AxsTokenRestConsumer;
 import com.tigo.ea.tbb.verifydebtor.restconsumer.CotasRestConsumer;
 import com.tigo.ea.tbb.verifydebtor.restconsumer.EntelRestConsumer;
 import com.tigo.ea.tbb.verifydebtor.restconsumer.VivaRestConsumer;
@@ -40,6 +41,8 @@ public class VerifyDebtorServiceImpl {
 	private EntelRestConsumer entelRestConsumer;
 	@Autowired
 	private CotasRestConsumer cotasRestconsumer;
+	@Autowired
+	private AxsTokenRestConsumer axsTokenRestConsumer;
 	
 	
      public List<Response> excuteConsumerOperator(String idTransaction, String servicio, String tipoDocumento, String nroDocumento) {
@@ -56,20 +59,23 @@ public class VerifyDebtorServiceImpl {
 			Data data=null;
 			
 		 GenericDto responseAxsDto= new GenericDto();
+		 String responseAxsToken = executeAxsToken(Constants.AXS_AUTH_USER, Constants.AXS_AUTH_PASSWORD);
+		 
 		 responseAxsDto= executeAxs(idTransaction, servicio, tipoDocumento, nroDocumento);
 		 if(responseAxsDto==null || responseAxsDto.isEmpty()) {
 			 operador.setOperador(Constants.OPERATOR_AXS);
-			 operador.setEstadoDeuda(Constants.ESTADO);	
+			 operador.setEstadoDeuda(Constants.ESTADO_NULL);	
 		 }else {
 			 operador.setOperador(Constants.OPERATOR_AXS);
 			 operador.setEstadoDeuda(responseAxsDto.getStringProperty(Constants.PARAMETER_ESTADO)); 
+			 
 		 }
 		 	
 		 GenericDto responseVivaDto= new GenericDto();
 		 responseVivaDto= executeViva(idTransaction, servicio, tipoDocumento, nroDocumento);
 		 if(responseVivaDto==null || responseVivaDto.isEmpty()) {
 			 operadorViva.setOperador(Constants.OPERATOR_VIVA);
-			 operadorViva.setEstadoDeuda(Constants.ESTADO);	
+			 operadorViva.setEstadoDeuda(Constants.ESTADO_NULL);	
 		 }else {
 			 operadorViva.setOperador(Constants.OPERATOR_VIVA);
 			 operadorViva.setEstadoDeuda(responseVivaDto.getStringProperty(Constants.PARAMETER_ESTADO_DEUDA));
@@ -79,7 +85,7 @@ public class VerifyDebtorServiceImpl {
 		 responseEntelDto=executeEntel(idTransaction, servicio, tipoDocumento, nroDocumento);
 		 if(responseEntelDto==null || responseEntelDto.isEmpty()) {
 			 operadorEntel.setOperador(Constants.OPERATOR_ENTEL);
-			 operadorEntel.setEstadoDeuda(Constants.ESTADO);
+			 operadorEntel.setEstadoDeuda(Constants.ESTADO_NULL);
 		 }else {
 			 operadorEntel.setOperador(Constants.OPERATOR_ENTEL);
 			  operadorEntel.setEstadoDeuda(responseEntelDto.getStringProperty(Constants.PARAMETER_ESTADO_DEUDA));
@@ -89,7 +95,7 @@ public class VerifyDebtorServiceImpl {
 		 responseCotasDto = executeCotas(idTransaction, servicio, tipoDocumento, nroDocumento);
 		 if(responseCotasDto==null || responseCotasDto.isEmpty()) {
 			 operadotCotas.setOperador(Constants.OPERATOR_COTAS);
-			 operadotCotas.setEstadoDeuda(Constants.ESTADO);
+			 operadotCotas.setEstadoDeuda(Constants.ESTADO_NULL);
 		 }else {
 			 operadotCotas.setOperador(Constants.OPERATOR_COTAS);
 			 operadotCotas.setEstadoDeuda(responseCotasDto.getStringProperty(Constants.PARAMETER_ESTADO_DEUDA_COTAS));
@@ -117,23 +123,16 @@ public class VerifyDebtorServiceImpl {
     	 GenericDto request= new GenericDto();
     	 GenericDto response= new GenericDto();
 
-    	 try {
-      		appUtil.debug(Constants.CATEGORY_SERVICE, request, clazz, ConsumerAppUtil.getMethodName(),
-      		"Inicia proceso de " + ConsumerAppUtil.getMethodName(), "",request.getStringProperty(Constants.PARAMETER_NRODOCUMENTO) != null ? request.getStringProperty(Constants.PARAMETER_NRODOCUMENTO) : "", 0L);
+    	 
     	 
       	 request.setProperty(Constants.PARAMETER_IDTRANSACTION, idTransaction);
     	 request.setProperty(Constants.PARAMETER_SERVICE, servicio);
     	 request.setProperty(Constants.PARAMETER_TIPODOCUMENTO, tipoDocumento);
     	 request.setProperty(Constants.PARAMETER_NRODOCUMENTO, nroDocumento);
+    	
     	 
     	 response= axsRestConsumer.executeGet(request);
 
-    	 } catch (Exception e) {
-    		 appUtil.error(Constants.CATEGORY_SERVICE, clazz, ConsumerAppUtil.getMethodName(),
-    		"Error de ejecucion en proceso " + ConsumerAppUtil.getMethodName(), "Error de ejecucion",
-    		 request.getStringProperty(Constants.PARAMETER_NRODOCUMENTO) != null ? request.getStringProperty(Constants.PARAMETER_NRODOCUMENTO) : "", 0L,
-    		 "", e);
-    	 }
     		 
 		return response;
     	 
@@ -143,10 +142,7 @@ public class VerifyDebtorServiceImpl {
     	 GenericDto request= new GenericDto();
     	 GenericDto response= new GenericDto();
     	
-    	 try {
-     		appUtil.debug(Constants.CATEGORY_SERVICE, request, clazz, ConsumerAppUtil.getMethodName(),
-     		"Inicia proceso de " + ConsumerAppUtil.getMethodName(), "",request.getStringProperty(Constants.PARAMETER_NRODOCUMENTO) != null ? request.getStringProperty(Constants.PARAMETER_NRODOCUMENTO) : "", 0L);
-    	
+    	 
      	 request.setProperty(Constants.PARAMETER_IDTRANSACTION, idTransaction);
     	 request.setProperty(Constants.PARAMETER_SERVICE, servicio);
     	 request.setProperty(Constants.PARAMETER_TIPODOCUMENTO, tipoDocumento);
@@ -154,22 +150,13 @@ public class VerifyDebtorServiceImpl {
     	 
     	 response=vivaRestConsumer.executeGet(request);
     	 
-    	 } catch (Exception e) {
-    		 appUtil.error(Constants.CATEGORY_SERVICE, clazz, ConsumerAppUtil.getMethodName(),
-    		"Error de ejecucion en proceso " + ConsumerAppUtil.getMethodName(), "Error de ejecucion",
-    		 request.getStringProperty(Constants.PARAMETER_NRODOCUMENTO) != null ? request.getStringProperty(Constants.PARAMETER_NRODOCUMENTO) : "", 0L,
-    		 "", e);
-    	 }
     	 return response;
      }
      
      private GenericDto executeEntel(String idTransaction, String servicio, String tipoDocumento, String nroDocumento) {
     	 GenericDto request = new GenericDto();
     	 GenericDto response= new GenericDto();
-    	 try {
-    		appUtil.debug(Constants.CATEGORY_SERVICE, request, clazz, ConsumerAppUtil.getMethodName(),
-    		"Inicia proceso de " + ConsumerAppUtil.getMethodName(), "",request.getStringProperty(Constants.PARAMETER_NRODOCUMENTO) != null ? request.getStringProperty(Constants.PARAMETER_NRODOCUMENTO) : "", 0L);
-    	
+   
     	 request.setProperty(Constants.PARAMETER_IDTRANSACTION, idTransaction);
     	 request.setProperty(Constants.PARAMETER_SERVICE, servicio);
     	 request.setProperty(Constants.PARAMETER_TIPODOCUMENTO, tipoDocumento);
@@ -177,17 +164,7 @@ public class VerifyDebtorServiceImpl {
     	 
     	 response=entelRestConsumer.executeGet(request);
     	 
-    	 appUtil.debug(Constants.CATEGORY_SERVICE, response, clazz, ConsumerAppUtil.getMethodName(),
-		"Finaliza proceso de " + ConsumerAppUtil.getMethodName(), "",
-		 request.getStringProperty(Constants.PARAMETER_NRODOCUMENTO) != null ? request.getStringProperty(Constants.PARAMETER_NRODOCUMENTO) : "", 0L);
-    		
-    	} catch (Exception e) {
-    		appUtil.error(Constants.CATEGORY_SERVICE, clazz, ConsumerAppUtil.getMethodName(),
-    		"Error de ejecucion en proceso " + ConsumerAppUtil.getMethodName(), "Error de ejecucion",
-    		request.getStringProperty(Constants.PARAMETER_NRODOCUMENTO) != null ? request.getStringProperty(Constants.PARAMETER_NRODOCUMENTO) : "", 0L,
-    		"", e);
-    	}
-    		
+    	
     	 return response;
      }
      
@@ -196,9 +173,6 @@ public class VerifyDebtorServiceImpl {
     	 GenericDto request = new GenericDto();
     	 GenericDto response= new GenericDto();
     	 
-    	 try {
-     		appUtil.debug(Constants.CATEGORY_SERVICE, request, clazz, ConsumerAppUtil.getMethodName(),
-     		"Inicia proceso de " + ConsumerAppUtil.getMethodName(), "",request.getStringProperty(Constants.PARAMETER_NRODOCUMENTO) != null ? request.getStringProperty(Constants.PARAMETER_NRODOCUMENTO) : "", 0L);
     	 request.setProperty(Constants.PARAMETER_IDTRANSACTION, idTransaction);
     	 request.setProperty(Constants.PARAMETER_SERVICE, servicio);
     	 request.setProperty(Constants.PARAMETER_TIPODOCUMENTO, tipoDocumento);
@@ -206,12 +180,22 @@ public class VerifyDebtorServiceImpl {
     	 
     	 response=cotasRestconsumer.executeGet(request);
     	 
-    	 } catch (Exception e) {
-     		appUtil.error(Constants.CATEGORY_SERVICE, clazz, ConsumerAppUtil.getMethodName(),
-     		"Error de ejecucion en proceso " + ConsumerAppUtil.getMethodName(), "Error de ejecucion",
-     		request.getStringProperty(Constants.PARAMETER_NRODOCUMENTO) != null ? request.getStringProperty(Constants.PARAMETER_NRODOCUMENTO) : "", 0L,
-     		"", e);
-     	}
     	 return response;
+     }
+     
+     private String executeAxsToken(String username, String password) {
+    	 GenericDto request = new GenericDto();
+    	 GenericDto response = new GenericDto();
+    	 String token=null;
+    	 
+    	request.setProperty(Constants.PARAMETER_AXS_AUTH_TOKEN_USER, username);
+    	request.setProperty(Constants.PARAMETER_AXS_AUTH_TOKEN_PASSWORD, password);
+    	
+    	response= axsTokenRestConsumer.executeGet(request);
+    	
+    	 token=response.getStringProperty("token");
+    	 
+		return token;
+    	 
      }
 }

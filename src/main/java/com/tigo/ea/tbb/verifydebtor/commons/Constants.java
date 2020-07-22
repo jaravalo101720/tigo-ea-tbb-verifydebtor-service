@@ -80,10 +80,17 @@ public class Constants
 	public static final String PARAMETER_ESTADO_DEUDA_COTAS = "EstadoDeuda";
 	
 	//estado null si llega a fallar el consumo del servicio
-	public static final String ESTADO = null;
+	public static final String ESTADO_NULL = null;
 	
-	//autenticacion
+	//autenticacion viva
 	public static final String VIVA_AUTH_USER = "tbb.verifydebtor.viva.user";
 	public static final String VIVA_AUTH_PASS = "tbb.verifydebtor.viva.password";
+	
+	//autenticacion axs
+	public static final String PARAMETER_AXS_AUTH_TOKEN_USER = "username";
+	public static final String PARAMETER_AXS_AUTH_TOKEN_PASSWORD = "password";
+	
+	public static final String AXS_AUTH_USER = "tbb.verifydebtor.axs.user";
+	public static final String AXS_AUTH_PASSWORD = "tbb.verifydebtor.axs.password";
 
 }
