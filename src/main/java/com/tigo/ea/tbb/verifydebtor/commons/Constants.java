@@ -81,5 +81,9 @@ public class Constants
 	
 	//estado null si llega a fallar el consumo del servicio
 	public static final String ESTADO = null;
+	
+	//autenticacion
+	public static final String VIVA_AUTH_USER = "tbb.verifydebtor.viva.user";
+	public static final String VIVA_AUTH_PASS = "tbb.verifydebtor.viva.password";
 
 }

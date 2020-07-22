@@ -36,18 +36,21 @@ public class VivaRestConsumer {
 
 	
 	public GenericDto executeGet(GenericDto request) {
-		
-		RestTemplate restTemplate = new RestTemplate();
 		GenericDto responseService = null;
 		HttpHeaders headers = new HttpHeaders();
-		headers.setAccept(Arrays.asList(MediaType.APPLICATION_JSON));	
-		HttpEntity<GenericDto> httpEntity = new HttpEntity<>(request, headers);	
-		
-
+		RestTemplate restTemplate = new RestTemplate();
 		TimeChronometer time = new TimeChronometer();
-		String url=env.getProperty("uri.consumer.service.operator.viva");
+		
 		
 		try {
+			
+			String user = env.getProperty(Constants.VIVA_AUTH_USER);
+			String pass = env.getProperty(Constants.VIVA_AUTH_PASS);
+			
+			headers = basicAuth(user, pass);
+			headers.setAccept(Arrays.asList(MediaType.APPLICATION_JSON));	
+			HttpEntity<GenericDto> httpEntity = new HttpEntity<>(request, headers);	
+			String url=env.getProperty("uri.consumer.service.operator.viva");
 			
 			time.start();
 			appUtil.info(Constants.CATEGORY_TARGET, "", clazz, ConsumerAppUtil.getMethodName(),
@@ -91,6 +94,16 @@ public class VivaRestConsumer {
 		return responseService;
 	}
 	
+	private HttpHeaders basicAuth(String user, String pass) throws UnsupportedEncodingException {
+		String plainCreds = user + ":" + pass;
+		byte[] plainCredsBytes = plainCreds.getBytes("UTF-8");
+		byte[] base64CredsBytes = Base64.encodeBase64(plainCredsBytes);
+		String base64Creds = new String(base64CredsBytes, "UTF-8");
+
+		HttpHeaders headers = new HttpHeaders();
+		headers.add("Authorization", "Basic " + base64Creds);
+		return headers;
+	}
 
 
 }

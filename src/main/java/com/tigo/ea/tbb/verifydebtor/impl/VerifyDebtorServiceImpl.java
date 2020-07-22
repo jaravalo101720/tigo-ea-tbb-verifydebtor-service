@@ -105,7 +105,8 @@ public class VerifyDebtorServiceImpl {
 			data= new Data (generalInfo, addInfo);
 			 
 			responseDto=new Response(data);  	 
-	    	response.add(responseDto);
+	    	
+			response.add(responseDto);
 	    
 		
     	 return response;
