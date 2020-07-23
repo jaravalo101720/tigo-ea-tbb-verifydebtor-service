@@ -19,7 +19,9 @@ import com.tigo.ea.tbb.verifydebtor.dto.Response;
 import com.tigo.ea.tbb.verifydebtor.restconsumer.AxsRestConsumer;
 import com.tigo.ea.tbb.verifydebtor.restconsumer.AxsTokenRestConsumer;
 import com.tigo.ea.tbb.verifydebtor.restconsumer.CotasRestConsumer;
+import com.tigo.ea.tbb.verifydebtor.restconsumer.CotasTokenRestConsumer;
 import com.tigo.ea.tbb.verifydebtor.restconsumer.EntelRestConsumer;
+import com.tigo.ea.tbb.verifydebtor.restconsumer.EntelTokenRestConsumer;
 import com.tigo.ea.tbb.verifydebtor.restconsumer.VivaRestConsumer;
 import com.tigo.ea.tbb.verifydebtor.util.ConsumerAppUtil;
 
@@ -43,6 +45,10 @@ public class VerifyDebtorServiceImpl {
 	private CotasRestConsumer cotasRestconsumer;
 	@Autowired
 	private AxsTokenRestConsumer axsTokenRestConsumer;
+	@Autowired
+	private CotasTokenRestConsumer cotasTokenRestConsumer;
+	@Autowired 
+	private EntelTokenRestConsumer entelTokenRestConsumer;
 	
 	
      public List<Response> excuteConsumerOperator(String idTransaction, String servicio, String tipoDocumento, String nroDocumento) {
@@ -59,7 +65,7 @@ public class VerifyDebtorServiceImpl {
 			Data data=null;
 			
 		 GenericDto responseAxsDto= new GenericDto();
-		 String responseAxsToken = executeAxsToken(Constants.AXS_AUTH_USER, Constants.AXS_AUTH_PASSWORD);
+		 String responseAxsToken = executeAxsToken(env.getProperty(Constants.AXS_AUTH_USER), env.getProperty(Constants.AXS_AUTH_PASSWORD));
 		 
 		 responseAxsDto= executeAxs(idTransaction, servicio, tipoDocumento, nroDocumento);
 		 if(responseAxsDto==null || responseAxsDto.isEmpty()) {
@@ -82,6 +88,7 @@ public class VerifyDebtorServiceImpl {
 		 }
 		 
 		 GenericDto responseEntelDto= new GenericDto();
+		 
 		 responseEntelDto=executeEntel(idTransaction, servicio, tipoDocumento, nroDocumento);
 		 if(responseEntelDto==null || responseEntelDto.isEmpty()) {
 			 operadorEntel.setOperador(Constants.OPERATOR_ENTEL);
@@ -92,6 +99,7 @@ public class VerifyDebtorServiceImpl {
 		 }
 		  
 		 GenericDto responseCotasDto = new GenericDto();
+		
 		 responseCotasDto = executeCotas(idTransaction, servicio, tipoDocumento, nroDocumento);
 		 if(responseCotasDto==null || responseCotasDto.isEmpty()) {
 			 operadotCotas.setOperador(Constants.OPERATOR_COTAS);
@@ -123,13 +131,12 @@ public class VerifyDebtorServiceImpl {
     	 GenericDto request= new GenericDto();
     	 GenericDto response= new GenericDto();
 
+
+      	 request.setProperty(Constants.PARAMETER_IDTRANSACTION_AXS, idTransaction);
+    	 request.setProperty(Constants.PARAMETER_SERVICE_AXS, servicio);
+    	 request.setProperty(Constants.PARAMETER_TIPODOCUMENTO_AXS, tipoDocumento);
+    	 request.setProperty(Constants.PARAMETER_NRODOCUMENTO_AXS, nroDocumento);
     	 
-    	 
-      	 request.setProperty(Constants.PARAMETER_IDTRANSACTION, idTransaction);
-    	 request.setProperty(Constants.PARAMETER_SERVICE, servicio);
-    	 request.setProperty(Constants.PARAMETER_TIPODOCUMENTO, tipoDocumento);
-    	 request.setProperty(Constants.PARAMETER_NRODOCUMENTO, nroDocumento);
-    	
     	 
     	 response= axsRestConsumer.executeGet(request);
 
@@ -143,10 +150,10 @@ public class VerifyDebtorServiceImpl {
     	 GenericDto response= new GenericDto();
     	
     	 
-     	 request.setProperty(Constants.PARAMETER_IDTRANSACTION, idTransaction);
-    	 request.setProperty(Constants.PARAMETER_SERVICE, servicio);
-    	 request.setProperty(Constants.PARAMETER_TIPODOCUMENTO, tipoDocumento);
-    	 request.setProperty(Constants.PARAMETER_NRODOCUMENTO, nroDocumento);
+     	 request.setProperty(Constants.PARAMETER_IDTRANSACTION_VIVA, idTransaction);
+    	 request.setProperty(Constants.PARAMETER_SERVICE_VIVA, servicio);
+    	 request.setProperty(Constants.PARAMETER_TIPODOCUMENTO_VIVA, tipoDocumento);
+    	 request.setProperty(Constants.PARAMETER_NRODOCUMENTO_VIVA, nroDocumento);
     	 
     	 response=vivaRestConsumer.executeGet(request);
     	 
@@ -157,10 +164,10 @@ public class VerifyDebtorServiceImpl {
     	 GenericDto request = new GenericDto();
     	 GenericDto response= new GenericDto();
    
-    	 request.setProperty(Constants.PARAMETER_IDTRANSACTION, idTransaction);
-    	 request.setProperty(Constants.PARAMETER_SERVICE, servicio);
-    	 request.setProperty(Constants.PARAMETER_TIPODOCUMENTO, tipoDocumento);
-    	 request.setProperty(Constants.PARAMETER_NRODOCUMENTO, nroDocumento);
+    	 request.setProperty(Constants.PARAMETER_IDTRANSACTION_ENTEL, idTransaction);
+    	 request.setProperty(Constants.PARAMETER_SERVICE_ENTEL, servicio);
+    	 request.setProperty(Constants.PARAMETER_TIPODOCUMENTO_ENTEL, tipoDocumento);
+    	 request.setProperty(Constants.PARAMETER_NRODOCUMENTO_ENTEL, nroDocumento);
     	 
     	 response=entelRestConsumer.executeGet(request);
     	 
@@ -173,10 +180,10 @@ public class VerifyDebtorServiceImpl {
     	 GenericDto request = new GenericDto();
     	 GenericDto response= new GenericDto();
     	 
-    	 request.setProperty(Constants.PARAMETER_IDTRANSACTION, idTransaction);
-    	 request.setProperty(Constants.PARAMETER_SERVICE, servicio);
-    	 request.setProperty(Constants.PARAMETER_TIPODOCUMENTO, tipoDocumento);
-    	 request.setProperty(Constants.PARAMETER_NRODOCUMENTO, nroDocumento);
+    	 request.setProperty(Constants.PARAMETER_IDTRANSACTION_COTAS, idTransaction);
+    	 request.setProperty(Constants.PARAMETER_SERVICE_COTAS, servicio);
+    	 request.setProperty(Constants.PARAMETER_TIPODOCUMENTO_COTAS, tipoDocumento);
+    	 request.setProperty(Constants.PARAMETER_NRODOCUMENTO_COTAS, nroDocumento);
     	 
     	 response=cotasRestconsumer.executeGet(request);
     	 
@@ -196,6 +203,39 @@ public class VerifyDebtorServiceImpl {
     	 token=response.getStringProperty("token");
     	 
 		return token;
+    	 
+     }
+     
+     private String executeCotasToken(String username, String password) {
+    	 String token = null;
+    	 GenericDto request = new GenericDto();
+    	 GenericDto response= new GenericDto();
+    	 
+    	 request.setProperty(Constants.PARAMETER_COTAS_AUTH_TOKEN_USER, username);
+    	 request.setProperty(Constants.PARAMETER_COTAS_AUTH_TOKEN_PASSWORD, password);
+    	 
+    	 response=cotasTokenRestConsumer.executeGet(request);
+    	 
+    	 token=response.getStringProperty("token");
+    	 
+    	 return token;
+    	 
+     }
+     
+     private String executeEntelToken(String username, String password) {
+		String token=null;
+		GenericDto request = new GenericDto();
+		GenericDto response= new GenericDto();
+		
+		request.setProperty(Constants.PARAMETER_ENTEL_AUTH_TOKEN_USER, username);
+		request.setProperty(Constants.PARAMETER_ENTEL_AUTH_TOKEN_PASSWORD, password);
+		
+		response=entelTokenRestConsumer.executeGet(request);
+		
+		token=response.getStringProperty("token");
+		
+    	 
+    	 return token;
     	 
      }
 }
