@@ -67,7 +67,7 @@ public class VerifyDebtorServiceImpl {
 		 GenericDto responseAxsDto= new GenericDto();
 		 String responseAxsToken = executeAxsToken(env.getProperty(Constants.AXS_AUTH_USER), env.getProperty(Constants.AXS_AUTH_PASSWORD));
 		 
-		 responseAxsDto= executeAxs(idTransaction, servicio, tipoDocumento, nroDocumento);
+		 responseAxsDto= executeAxs(idTransaction, servicio, tipoDocumento, nroDocumento, responseAxsToken);
 		 if(responseAxsDto==null || responseAxsDto.isEmpty()) {
 			 operador.setOperador(Constants.OPERATOR_AXS);
 			 operador.setEstadoDeuda(Constants.ESTADO_NULL);	
@@ -127,7 +127,8 @@ public class VerifyDebtorServiceImpl {
     	 
      }
      
-     private GenericDto executeAxs(String idTransaction, String servicio, String tipoDocumento, String nroDocumento) {
+     private GenericDto executeAxs(String idTransaction, String servicio, String tipoDocumento, String nroDocumento,
+    		 String token) {
     	 GenericDto request= new GenericDto();
     	 GenericDto response= new GenericDto();
 
@@ -136,7 +137,7 @@ public class VerifyDebtorServiceImpl {
     	 request.setProperty(Constants.PARAMETER_SERVICE_AXS, servicio);
     	 request.setProperty(Constants.PARAMETER_TIPODOCUMENTO_AXS, tipoDocumento);
     	 request.setProperty(Constants.PARAMETER_NRODOCUMENTO_AXS, nroDocumento);
-    	 
+    	 request.setProperty("token", token);    	 
     	 
     	 response= axsRestConsumer.executeGet(request);
 

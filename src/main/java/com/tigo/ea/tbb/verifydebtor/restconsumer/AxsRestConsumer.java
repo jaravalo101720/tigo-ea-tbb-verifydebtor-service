@@ -46,18 +46,18 @@ public class AxsRestConsumer {
 			HttpEntity<GenericDto> httpEntity = new HttpEntity<>(request, headers);
 			String url=env.getProperty("uri.consumer.service.operator.axs");
 			
-			time.start();
+			
 			
 			appUtil.info(Constants.CATEGORY_TARGET, request, clazz, ConsumerAppUtil.getMethodName(),
 					"Request servicio " + ConsumerAppUtil.getMethodName(), "", request.getStringProperty(Constants.PARAMETER_NRODOCUMENTO_AXS), 0L);
-			
+			time.start();
 			ResponseEntity<GenericDto> response = restTemplate.exchange(url, HttpMethod.POST,httpEntity, GenericDto.class);
 
-			if (response==null || response.getBody() == null || response.getBody().isEmpty()) {
-				throw new AppServiceException(env.getProperty(Constants.CODE_SERVICE), "no data to return");
-			} else {
+			//if (response==null || response.getBody() == null || response.getBody().isEmpty()) {
+				//throw new AppServiceException(env.getProperty(Constants.CODE_SERVICE), "no data to return");
+			//} else {
 				responseService = response.getBody();
-			}
+			//}
 			time.stop();
 			appUtil.info(Constants.CATEGORY_TARGET, responseService, clazz, ConsumerAppUtil.getMethodName(),
 					"Response servicio " + ConsumerAppUtil.getMethodName(), "", request.getStringProperty(Constants.PARAMETER_NRODOCUMENTO_AXS),
