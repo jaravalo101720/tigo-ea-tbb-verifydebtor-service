@@ -1,4 +1,4 @@
-package com.tigo.ea.tbb.verifydebtor.impl;
+/*package com.tigo.ea.tbb.verifydebtor.impl;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -67,7 +67,7 @@ public class VerifyDebtorServiceImpl {
 		 GenericDto responseAxsDto= new GenericDto();
 		 String responseAxsToken = executeAxsToken(env.getProperty(Constants.AXS_AUTH_USER), env.getProperty(Constants.AXS_AUTH_PASSWORD));
 		 
-		 responseAxsDto= executeAxs(idTransaction, servicio, tipoDocumento, nroDocumento, responseAxsToken);
+		 responseAxsDto= executeAxs(idTransaction, servicio, tipoDocumento, nroDocumento);
 		 if(responseAxsDto==null || responseAxsDto.isEmpty()) {
 			 operador.setOperador(Constants.OPERATOR_AXS);
 			 operador.setEstadoDeuda(Constants.ESTADO_NULL);	
@@ -127,8 +127,7 @@ public class VerifyDebtorServiceImpl {
     	 
      }
      
-     private GenericDto executeAxs(String idTransaction, String servicio, String tipoDocumento, String nroDocumento,
-    		 String token) {
+     private GenericDto executeAxs(String idTransaction, String servicio, String tipoDocumento, String nroDocumento) {
     	 GenericDto request= new GenericDto();
     	 GenericDto response= new GenericDto();
 
@@ -137,7 +136,7 @@ public class VerifyDebtorServiceImpl {
     	 request.setProperty(Constants.PARAMETER_SERVICE_AXS, servicio);
     	 request.setProperty(Constants.PARAMETER_TIPODOCUMENTO_AXS, tipoDocumento);
     	 request.setProperty(Constants.PARAMETER_NRODOCUMENTO_AXS, nroDocumento);
-    	 request.setProperty("token", token);    	 
+    	 	 
     	 
     	 response= axsRestConsumer.executeGet(request);
 
@@ -201,7 +200,9 @@ public class VerifyDebtorServiceImpl {
     	
     	response= axsTokenRestConsumer.executeGet(request);
     	
-    	 token=response.getStringProperty("token");
+    	 token=response.getStringProperty("eyJhbGciOiJIUzUxMiJ9.eyJpYXQiOzMDYsImlzcyI6Imh0dHBzOi8vd3d3LmF4c2JvbGl2a"
+    			 						 + "WEuY29tLyIsInN1YiI6ImFkbWluIiwiZXhwIjoxNTk1MTAwNzA2fQ.fg2oF84S6pMap_ussszQrfBTl"
+    			 						 + "wUPGF88kzYUwX9sJFT9PCxMng9EEDA2QXNDHW1ehiCBzEwK5eDCmaLOzqw");
     	 
 		return token;
     	 
@@ -240,3 +241,4 @@ public class VerifyDebtorServiceImpl {
     	 
      }
 }
+*/

@@ -21,6 +21,7 @@ import org.springframework.web.util.UriComponentsBuilder;
 import com.htc.ea.util.dto.GenericDto;
 import com.htc.ea.util.util.TimeChronometer;
 import com.tigo.ea.tbb.verifydebtor.commons.Constants;
+import com.tigo.ea.tbb.verifydebtor.dto.AxsDto;
 import com.tigo.ea.tbb.verifydebtor.util.AppServiceException;
 import com.tigo.ea.tbb.verifydebtor.util.ConsumerAppUtil;
 
@@ -35,8 +36,8 @@ public class VivaRestConsumer {
 	private Logger log4j = LoggerFactory.getLogger(clazz);
 
 	
-	public GenericDto executeGet(GenericDto request) {
-		GenericDto responseService = null;
+	public AxsDto executeGet(AxsDto request) {
+		AxsDto responseService = null;
 		HttpHeaders headers = new HttpHeaders();
 		RestTemplate restTemplate = new RestTemplate();
 		TimeChronometer time = new TimeChronometer();
@@ -44,28 +45,28 @@ public class VivaRestConsumer {
 		
 		try {
 			
-			String user = env.getProperty(Constants.VIVA_AUTH_USER);
-			String pass = env.getProperty(Constants.VIVA_AUTH_PASS);
+			String user = "admin";
+			String pass = "admin";
 			
 			headers = basicAuth(user, pass);
 			headers.setAccept(Arrays.asList(MediaType.APPLICATION_JSON));	
-			HttpEntity<GenericDto> httpEntity = new HttpEntity<>(request, headers);	
-			String url=env.getProperty("uri.consumer.service.operator.viva");
+			HttpEntity<AxsDto> httpEntity = new HttpEntity<>(request, headers);	
+			String url="http://localhost:8080/viva";
 			
 			time.start();
 			appUtil.info(Constants.CATEGORY_TARGET, "", clazz, ConsumerAppUtil.getMethodName(),
-					"Request servicio " + ConsumerAppUtil.getMethodName(), "", request.getStringProperty(Constants.PARAMETER_NRODOCUMENTO_AXS), 0L);
+					"Request servicio " + ConsumerAppUtil.getMethodName(), "", request.getNroDocumento(), 0L);
 			
-			ResponseEntity<GenericDto> response = restTemplate.exchange(url, HttpMethod.POST,httpEntity, GenericDto.class);
+			ResponseEntity<AxsDto> response = restTemplate.exchange(url, HttpMethod.POST,httpEntity, AxsDto.class);
 
-			if (response==null || response.getBody() == null || response.getBody().isEmpty()) {
-				throw new AppServiceException(env.getProperty(Constants.CODE_SERVICE), "no data to return");
-			} else {
+			//if (response==null || response.getBody() == null || response.getBody().isEmpty()) {
+				//throw new AppServiceException(env.getProperty(Constants.CODE_SERVICE), "no data to return");
+			//} else {
 				responseService = response.getBody();
-			}
+			//}
 			time.stop();
 			appUtil.info(Constants.CATEGORY_TARGET, responseService, clazz, ConsumerAppUtil.getMethodName(),
-					"Response servicio " + ConsumerAppUtil.getMethodName(), "", request.getStringProperty(Constants.PARAMETER_NRODOCUMENTO_AXS),
+					"Response servicio " + ConsumerAppUtil.getMethodName(), "", request.getNroDocumento(),
 					time.elapsedMilisUntilLastStop());
 
 		} catch (HttpStatusCodeException e) {

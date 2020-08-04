@@ -22,10 +22,12 @@ import com.tigo.ea.tbb.verifydebtor.dto.Data;
 import com.tigo.ea.tbb.verifydebtor.dto.GeneralInfo;
 import com.tigo.ea.tbb.verifydebtor.dto.OperadorStatus;
 import com.tigo.ea.tbb.verifydebtor.dto.Response;
-import com.tigo.ea.tbb.verifydebtor.impl.VerifyDebtorServiceImpl;
+import com.tigo.ea.tbb.verifydebtor.impl.VerificarDeudaServicioImpl;
+//import com.tigo.ea.tbb.verifydebtor.impl.VerifyDebtorServiceImpl;
 import com.tigo.ea.tbb.verifydebtor.util.AppServiceException;
 import com.tigo.ea.tbb.verifydebtor.util.ConsumerAppUtil;
 import com.tigo.ea.tbb.verifydebtor.util.ValidateRequest;
+
 
 import io.swagger.annotations.Api;
 
@@ -47,8 +49,10 @@ public class VerifyDebtorRestController {
 	@Autowired
     private ValidateRequest validateRequest;
 	
+	//@Autowired
+	//private VerifyDebtorServiceImpl verifyDebtorService;
 	@Autowired
-	private VerifyDebtorServiceImpl verifyDebtorService;
+	private VerificarDeudaServicioImpl verificarServicio;
 	
 	@GetMapping(value = "/verify-debtor", produces = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<?> executeGet(
@@ -77,18 +81,16 @@ public class VerifyDebtorRestController {
 					"", "", 0L);
 			time.start();
 		
-			responseData=verifyDebtorService.excuteConsumerOperator(idTransaccion, servicio, tipoDocumento, nroDocumento);
+			responseData=verificarServicio.processOperator(idTransaccion, servicio, tipoDocumento, nroDocumento);
 			response= new ResponseEntity<>(responseData, HttpStatus.OK);
 			
 			time.stop();
 			appUtil.info(Constants.CATEGORY_SERVICE, response, clazz, ConsumerAppUtil.getMethodName(),
 					"verify-debtor: Response", "", "", time.elapsedMilisUntilLastStop());
 		} catch (AppServiceException e) {			
-		String description = "";
-		String code = "";
-		code = e.getCode();
-		description = e.getMessage();
-		
+			int httpStatus=403;
+			responseData = (List<Response>) fillResponseError(e.getCode(), e.getMessage());
+			response = new ResponseEntity<Response>((Response) responseData, HttpStatus.valueOf(httpStatus));
 			time.stop();
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -103,6 +105,17 @@ public class VerifyDebtorRestController {
 		return response;
 	}
 	
+	public Response fillResponseError(String codigo, String descripcion) {
+		Response response=null;
+		GeneralInfo generalInfo=null;
+		Data data = new Data();
+		generalInfo = new GeneralInfo(codigo, descripcion);
+		data.setGeneralInfo(generalInfo);
+		response = new Response(data);
+		
+		return response;
+		
+	}
 	private void validate(String idTransaccion, String accion, String validAcction) {
 		if (idTransaccion == null || idTransaccion.isEmpty() || idTransaccion.length() < 32) {
 			throw new AppServiceException("400", "parametro idTransaccion no valido, debe contener 32 caracteres");
